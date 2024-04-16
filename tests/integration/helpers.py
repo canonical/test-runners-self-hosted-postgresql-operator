@@ -318,7 +318,7 @@ async def deploy_and_relate_application_with_postgresql(
         status="active",
         raise_on_blocked=False,
         timeout=1500,
-        constraints={"arch": "arm64"}
+        constraints={"arch": "arm64"},
     )
 
     # Relate application to PostgreSQL.
