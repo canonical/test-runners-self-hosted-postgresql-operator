@@ -312,13 +312,13 @@ async def deploy_and_relate_application_with_postgresql(
         application_name=application_name,
         num_units=number_of_units,
         config=config,
+        constraints={"arch": "arm64"},
     )
     await ops_test.model.wait_for_idle(
         apps=[application_name],
         status="active",
         raise_on_blocked=False,
         timeout=1500,
-        constraints={"arch": "arm64"},
     )
 
     # Relate application to PostgreSQL.

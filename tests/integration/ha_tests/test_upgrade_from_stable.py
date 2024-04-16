@@ -63,11 +63,13 @@ async def test_deploy_stable(ops_test: OpsTest) -> None:
             DATABASE_APP_NAME,
             num_units=3,
             channel="14/stable",
+            constraints={"arch": "arm64"},
         )
     await ops_test.model.deploy(
         APPLICATION_NAME,
         num_units=1,
         channel="latest/edge",
+        constraints={"arch": "arm64"},
     )
     logger.info("Wait for applications to become active")
     async with ops_test.fast_forward():

@@ -48,6 +48,7 @@ async def test_deploy(ops_test: OpsTest, charm: str):
         num_units=3,
         series=CHARM_SERIES,
         config={"profile": "testing"},
+        constraints={"arch": "arm64"},
     )
 
     # Reducing the update status frequency to speed up the triggering of deferred events.

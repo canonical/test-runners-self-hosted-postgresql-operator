@@ -45,6 +45,7 @@ async def test_build_and_deploy(ops_test: OpsTest) -> None:
             series=CHARM_SERIES,
             storage={"pgdata": {"pool": "lxd-btrfs", "size": 2048}},
             config={"profile": "testing"},
+            constraints={"arch": "arm64"},
         )
 
         # Deploy the second cluster
@@ -54,6 +55,7 @@ async def test_build_and_deploy(ops_test: OpsTest) -> None:
             num_units=1,
             series=CHARM_SERIES,
             config={"profile": "testing"},
+            constraints={"arch": "arm64"},
         )
 
         await ops_test.model.wait_for_idle(status="active", timeout=1500)

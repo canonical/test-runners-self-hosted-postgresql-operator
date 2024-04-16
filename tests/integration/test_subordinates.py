@@ -39,14 +39,16 @@ async def test_deploy(ops_test: OpsTest, charm: str, github_secrets):
             num_units=3,
             series=CHARM_SERIES,
             config={"profile": "testing"},
+            constraints={"arch": "arm64"},
         ),
-        ops_test.model.deploy("landscape-scalable"),
+        ops_test.model.deploy("landscape-scalable", constraints={"arch": "arm64"}),
         ops_test.model.deploy(
             UBUNTU_PRO_APP_NAME,
             config={"token": github_secrets["UBUNTU_PRO_TOKEN"]},
             num_units=0,
+            constraints={"arch": "arm64"},
         ),
-        ops_test.model.deploy(LS_CLIENT, num_units=0),
+        ops_test.model.deploy(LS_CLIENT, num_units=0, constraints={"arch": "arm64"}),
     )
     await ops_test.model.applications["landscape-server"].set_config(landscape_config)
 

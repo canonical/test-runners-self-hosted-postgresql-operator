@@ -52,6 +52,7 @@ async def test_mailman3_core_db(ops_test: OpsTest, charm: str) -> None:
             num_units=DATABASE_UNITS,
             series=CHARM_SERIES,
             config={"profile": "testing"},
+            constraints={"arch": "arm64"},
         )
 
         # Wait until the PostgreSQL charm is successfully deployed.
@@ -199,10 +200,18 @@ async def test_sentry_db_blocked(ops_test: OpsTest, charm: str) -> None:
         # Deploy Sentry and its dependencies.
         await asyncio.gather(
             ops_test.model.deploy(
-                "omnivector-sentry", application_name="sentry1", series="bionic"
+                "omnivector-sentry",
+                application_name="sentry1",
+                series="bionic",
+                constraints={"arch": "arm64"},
             ),
-            ops_test.model.deploy("haproxy", series="focal"),
-            ops_test.model.deploy("omnivector-redis", application_name="redis", series="bionic"),
+            ops_test.model.deploy("haproxy", series="focal", constraints={"arch": "arm64"}),
+            ops_test.model.deploy(
+                "omnivector-redis",
+                application_name="redis",
+                series="bionic",
+                constraints={"arch": "arm64"},
+            ),
         )
         await ops_test.model.wait_for_idle(
             apps=["sentry1"],
@@ -254,7 +263,10 @@ async def test_sentry_db_blocked(ops_test: OpsTest, charm: str) -> None:
         await asyncio.gather(
             ops_test.model.remove_application("sentry1", block_until_done=True),
             ops_test.model.deploy(
-                "omnivector-sentry", application_name="sentry2", series="bionic"
+                "omnivector-sentry",
+                application_name="sentry2",
+                series="bionic",
+                constraints={"arch": "arm64"},
             ),
         )
         await asyncio.gather(

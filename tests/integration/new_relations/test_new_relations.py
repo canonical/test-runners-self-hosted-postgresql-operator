@@ -51,6 +51,7 @@ async def test_deploy_charms(ops_test: OpsTest, charm):
                 num_units=2,
                 series=CHARM_SERIES,
                 channel="edge",
+                constraints={"arch": "arm64"},
             ),
             ops_test.model.deploy(
                 charm,
@@ -58,6 +59,7 @@ async def test_deploy_charms(ops_test: OpsTest, charm):
                 num_units=1,
                 series=CHARM_SERIES,
                 config={"profile": "testing"},
+                constraints={"arch": "arm64"},
             ),
             ops_test.model.deploy(
                 charm,
@@ -65,6 +67,7 @@ async def test_deploy_charms(ops_test: OpsTest, charm):
                 num_units=2,
                 series=CHARM_SERIES,
                 config={"profile": "testing"},
+                constraints={"arch": "arm64"},
             ),
         )
 
@@ -218,6 +221,7 @@ async def test_two_applications_doesnt_share_the_same_relation_data(ops_test: Op
         APPLICATION_APP_NAME,
         application_name=another_application_app_name,
         channel="edge",
+        constraints={"arch": "arm64"},
     )
     await ops_test.model.wait_for_idle(apps=all_app_names, status="active")
 
@@ -446,7 +450,7 @@ async def test_admin_role(ops_test: OpsTest):
     all_app_names = [DATA_INTEGRATOR_APP_NAME]
     all_app_names.extend(APP_NAMES)
     async with ops_test.fast_forward():
-        await ops_test.model.deploy(DATA_INTEGRATOR_APP_NAME)
+        await ops_test.model.deploy(DATA_INTEGRATOR_APP_NAME, constraints={"arch": "arm64"})
         await ops_test.model.wait_for_idle(apps=[DATA_INTEGRATOR_APP_NAME], status="blocked")
         await ops_test.model.applications[DATA_INTEGRATOR_APP_NAME].set_config({
             "database-name": DATA_INTEGRATOR_APP_NAME.replace("-", "_"),
@@ -535,7 +539,9 @@ async def test_invalid_extra_user_roles(ops_test: OpsTest):
         another_data_integrator_app_name = f"another-{DATA_INTEGRATOR_APP_NAME}"
         data_integrator_apps_names = [DATA_INTEGRATOR_APP_NAME, another_data_integrator_app_name]
         await ops_test.model.deploy(
-            DATA_INTEGRATOR_APP_NAME, application_name=another_data_integrator_app_name
+            DATA_INTEGRATOR_APP_NAME,
+            application_name=another_data_integrator_app_name,
+            constraints={"arch": "arm64"},
         )
         await ops_test.model.wait_for_idle(
             apps=[another_data_integrator_app_name], status="blocked"
@@ -592,6 +598,7 @@ async def test_nextcloud_db_blocked(ops_test: OpsTest, charm: str) -> None:
             channel="edge",
             application_name="nextcloud",
             num_units=1,
+            constraints={"arch": "arm64"},
         )
         await ops_test.model.wait_for_idle(
             apps=["nextcloud"],

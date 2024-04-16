@@ -89,8 +89,13 @@ async def test_backup(ops_test: OpsTest, cloud_configs: Tuple[Dict, Dict]) -> No
     charm = await ops_test.build_charm(".")
 
     # Deploy S3 Integrator and TLS Certificates Operator.
-    await ops_test.model.deploy(S3_INTEGRATOR_APP_NAME)
-    await ops_test.model.deploy(TLS_CERTIFICATES_APP_NAME, config=TLS_CONFIG, channel=TLS_CHANNEL)
+    await ops_test.model.deploy(S3_INTEGRATOR_APP_NAME, constraints={"arch": "arm64"})
+    await ops_test.model.deploy(
+        TLS_CERTIFICATES_APP_NAME,
+        config=TLS_CONFIG,
+        channel=TLS_CHANNEL,
+        constraints={"arch": "arm64"},
+    )
 
     for cloud, config in cloud_configs[0].items():
         # Deploy and relate PostgreSQL to S3 integrator (one database app for each cloud for now
@@ -103,6 +108,7 @@ async def test_backup(ops_test: OpsTest, cloud_configs: Tuple[Dict, Dict]) -> No
             num_units=2,
             series=CHARM_SERIES,
             config={"profile": "testing"},
+            constraints={"arch": "arm64"},
         )
         await ops_test.model.relate(database_app_name, S3_INTEGRATOR_APP_NAME)
         await ops_test.model.relate(database_app_name, TLS_CERTIFICATES_APP_NAME)
@@ -280,11 +286,14 @@ async def test_restore_on_new_cluster(ops_test: OpsTest, github_secrets) -> None
     charm = await ops_test.build_charm(".")
     previous_database_app_name = f"{DATABASE_APP_NAME}-gcp"
     database_app_name = f"new-{DATABASE_APP_NAME}"
-    await ops_test.model.deploy(charm, application_name=previous_database_app_name)
+    await ops_test.model.deploy(
+        charm, application_name=previous_database_app_name, constraints={"arch": "arm64"}
+    )
     await ops_test.model.deploy(
         charm,
         application_name=database_app_name,
         series=CHARM_SERIES,
+        constraints={"arch": "arm64"},
     )
     await ops_test.model.relate(previous_database_app_name, S3_INTEGRATOR_APP_NAME)
     await ops_test.model.relate(database_app_name, S3_INTEGRATOR_APP_NAME)

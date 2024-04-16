@@ -35,6 +35,7 @@ async def test_build_and_deploy(ops_test: OpsTest) -> None:
                 num_units=3,
                 series=CHARM_SERIES,
                 config={"profile": "testing"},
+                constraints={"arch": "arm64"},
             )
     # Deploy the continuous writes application charm if it wasn't already deployed.
     if not await app_name(ops_test, APPLICATION_NAME):
@@ -45,6 +46,7 @@ async def test_build_and_deploy(ops_test: OpsTest) -> None:
                 application_name=APPLICATION_NAME,
                 series=CHARM_SERIES,
                 channel="edge",
+                constraints={"arch": "arm64"},
             )
 
     if wait_for_apps:
@@ -125,6 +127,7 @@ async def test_no_data_replicated_between_clusters(ops_test: OpsTest, continuous
                 num_units=2,
                 series=CHARM_SERIES,
                 config={"profile": "testing"},
+                constraints={"arch": "arm64"},
             )
             await ops_test.model.wait_for_idle(
                 apps=[new_cluster_app], status="active", timeout=1500

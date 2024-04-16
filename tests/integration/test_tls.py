@@ -52,6 +52,7 @@ async def test_deploy_active(ops_test: OpsTest):
             num_units=3,
             series=CHARM_SERIES,
             config={"profile": "testing"},
+            constraints={"arch": "arm64"},
         )
         # No wait between deploying charms, since we can't guarantee users will wait. Furthermore,
         # bundles don't wait between deploying charms.
@@ -63,7 +64,10 @@ async def test_tls_enabled(ops_test: OpsTest) -> None:
     async with ops_test.fast_forward():
         # Deploy TLS Certificates operator.
         await ops_test.model.deploy(
-            TLS_CERTIFICATES_APP_NAME, config=TLS_CONFIG, channel=TLS_CHANNEL
+            TLS_CERTIFICATES_APP_NAME,
+            config=TLS_CONFIG,
+            channel=TLS_CHANNEL,
+            constraints={"arch": "arm64"},
         )
 
         # Relate it to the PostgreSQL to enable TLS.
